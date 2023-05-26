@@ -1,11 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpRequest, HttpResponse
+from django.db.models.fields import SlugField
 
 from .models import Category, Product
 from cart.forms import CartAddProductForm
 
 
-def product_list(request: HttpRequest, category_slug=None) -> HttpResponse:
+def product_list(request: HttpRequest,
+                 category_slug: SlugField = None) -> HttpResponse:
     category = None
     categories = Category.objects.all()
     products = Product.objects.filter(available=True)
@@ -21,7 +23,8 @@ def product_list(request: HttpRequest, category_slug=None) -> HttpResponse:
                    'products': products})
 
 
-def product_detail(request: HttpRequest, id, slug) -> HttpResponse:
+def product_detail(request: HttpRequest, id: int,
+                   slug: SlugField) -> HttpResponse:
     product = get_object_or_404(Product, id=id, slug=slug, available=True)
     cart_product_form = CartAddProductForm()
 
