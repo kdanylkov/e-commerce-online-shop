@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.urls import reverse
+from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
 
 from .forms import OrderCreationForm
@@ -15,9 +16,8 @@ def order_create(request: HttpRequest) -> HttpResponse:
         if order:
             mail_order_created.delay(order.id)
 
-        return render(request,
-                      'orders/order/created.html',
-                      {'order': order})
+            request.session['order_id'] = order.id
+            return redirect(reverse('payment:process'))
     else:
         form = OrderCreationForm()
     return render(request,
