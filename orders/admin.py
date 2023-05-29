@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.http import HttpResponse, HttpRequest
 from django.db.models import QuerySet
@@ -52,9 +53,9 @@ def export_to_csv(modeladmin: admin.ModelAdmin,
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['id', 'first_name', 'last_name', 'email', 'address',
-                    'postal_code', 'city', 'paid', 'order_payment', 'created',
-                    'updated']
+    list_display = ['id', 'first_name', 'last_name', 'order_detail', 'email',
+                    'address', 'postal_code', 'city', 'paid', 'order_payment',
+                    'created', 'order_detail', 'updated',]
 
     list_filter = ['paid', 'created', 'updated']
     list_display_links = ['first_name']
@@ -72,3 +73,8 @@ class OrderAdmin(admin.ModelAdmin):
             html = f'<a href="{url}" target="_blank">{obj.stripe_id}</a>'
             return mark_safe(html)
         return ''
+
+    @admin.display(description='Order Details')
+    def order_detail(self, obj):
+        url = reverse('orders:admin_order_detail', args=[obj.id])
+        return mark_safe(f'<a href="{url}">View</a>')
