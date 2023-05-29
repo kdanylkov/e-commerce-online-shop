@@ -28,7 +28,7 @@ def export_to_csv(modeladmin: admin.ModelAdmin,
     response = HttpResponse(content_type='text/csv',
                             headers={
                                 'Content-Disposition': content_disposition,
-                                })
+                            })
 
     writer = csv.writer(response)
     fields = [field for field in opts.get_fields()
@@ -53,9 +53,10 @@ def export_to_csv(modeladmin: admin.ModelAdmin,
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['id', 'first_name', 'last_name', 'order_detail', 'email',
-                    'address', 'postal_code', 'city', 'paid', 'order_payment',
-                    'created', 'order_detail', 'updated',]
+    list_display = ['id', 'first_name', 'last_name', 'order_detail',
+                    'order_pdf', 'email', 'address', 'postal_code', 'city',
+                    'paid', 'order_payment', 'created', 'order_detail',
+                    'updated',]
 
     list_filter = ['paid', 'created', 'updated']
     list_display_links = ['first_name']
@@ -78,3 +79,8 @@ class OrderAdmin(admin.ModelAdmin):
     def order_detail(self, obj):
         url = reverse('orders:admin_order_detail', args=[obj.id])
         return mark_safe(f'<a href="{url}">View</a>')
+
+    @admin.display(description='Invoice')
+    def order_pdf(self, obj):
+        url = reverse('orders:admin_order_pdf', args=[obj.id])
+        return mark_safe(f'<a href="{url}">PDF</a>')
