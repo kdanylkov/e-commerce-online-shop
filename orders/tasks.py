@@ -1,11 +1,8 @@
 from celery import shared_task
 from django.core.mail import send_mail
-from environs import Env
+from django.conf import settings
 
 from .models import Order
-
-env = Env()
-env.read_env()
 
 
 @shared_task
@@ -24,7 +21,7 @@ Your order ID is {order_id}.
     '''
     mail_sent = send_mail(subject,
                           message,
-                          env.str('SENDER'),
+                          settings.EMAIL_SENDER,
                           [order.email])
 
     return mail_sent
