@@ -10,7 +10,7 @@ import weasyprint
 from .forms import OrderCreationForm
 from .services import create_order_in_db
 from cart.cart import Cart
-from .tasks import mail_order_created
+from .tasks import mail_order_created, update_recommendations
 from .models import Order
 
 
@@ -20,7 +20,8 @@ def order_create(request: HttpRequest) -> HttpResponse:
         form = OrderCreationForm(request.POST)
         order = create_order_in_db(form, cart)
         if order:
-            mail_order_created.delay(order.id)
+            # mail_order_created.delay(order.id)
+            update_recommendations.delay(order.id)
 
             request.session['order_id'] = order.id
             return redirect(reverse('payment:process'))

@@ -6,6 +6,7 @@ from django.conf import settings
 from django.http import HttpRequest
 
 from orders.models import Order
+from cart.cart import Cart
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 stripe.api_version = settings.STRIPE_API_VERSION
@@ -35,7 +36,7 @@ def payment_process(request: HttpRequest):
                     'product_data': {
                         'name': item.product.name
                         },
-                    },
+                     },
                 'quantity': item.quantity,
                 })
 
@@ -50,6 +51,7 @@ def payment_process(request: HttpRequest):
                 }]
         session = stripe.checkout.Session.create(**session_data)
 
+        remove_coupon_from_cart_and_session(request)
         return redirect(session.url, code=303)
     else:
         return render(request, 'payment/process.html', {'order': order})
@@ -61,3 +63,11 @@ def payment_completed(request: HttpRequest):
 
 def payment_canceled(request: HttpRequest):
     return render(request, 'payment/canceled.html')
+
+
+def remove_coupon_from_cart_and_session(request: HttpRequest):
+    del request.session['coupon_id']
+    request.session.modified = True
+
+    cart = Cart(request)
+    cart.coupon_id = None

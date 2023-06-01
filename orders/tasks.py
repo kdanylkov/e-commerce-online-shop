@@ -1,8 +1,10 @@
 from celery import shared_task
+
 from django.core.mail import send_mail
 from django.conf import settings
 
 from .models import Order
+from shop.recommender import Recommender
 
 
 @shared_task
@@ -25,3 +27,13 @@ Your order ID is {order_id}.
                           [order.email])
 
     return mail_sent
+
+
+@shared_task
+def update_recommendations(order_id):
+    order = Order.objects.prefetch_related('items__product').get(id=order_id)
+
+    products = [item.product for item in order.items.all()]
+
+    rec = Recommender()
+    rec.products_bought(products)
