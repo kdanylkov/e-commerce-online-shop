@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 
 import weasyprint
 
-from .forms import OrderCreationForm
+from .forms import OrderCreationFormRu, OrderCreationFormUs, OrderCreationForm
 from .services import create_order_in_db
 from cart.cart import Cart
 from .tasks import mail_order_created, update_recommendations
@@ -17,10 +17,17 @@ from .models import Order
 def order_create(request: HttpRequest) -> HttpResponse:
     cart = Cart(request)
     if request.method == 'POST':
-        form = OrderCreationForm(request.POST)
+        language = request.LANGUAGE_CODE
+        if language in ('ru', 'ru-ru'):
+            form = OrderCreationFormRu(request.POST)
+        elif language in ('en-us', 'en'):
+            form = OrderCreationFormUs(request.POST)
+        else:
+            form = OrderCreationForm(request.POST)
+
         order = create_order_in_db(form, cart)
         if order:
-            # mail_order_created.delay(order.id)
+            mail_order_created.delay(order.id)
             update_recommendations.delay(order.id)
 
             request.session['order_id'] = order.id

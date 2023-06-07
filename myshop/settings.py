@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     # 3rd party
     'rosetta',
     'parler',
+    'localflavor',
     # Local apps
     'shop.apps.ShopConfig',
     'cart.apps.CartConfig',

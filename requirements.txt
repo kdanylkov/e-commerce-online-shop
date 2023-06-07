@@ -20,6 +20,8 @@ dj-database-url==2.0.0
 dj-email-url==1.0.6
 Django==4.2.1
 django-cache-url==3.4.4
+django-localflavor==4.0
+django-parler==2.3
 django-rosetta==0.9.9
 django-stubs==4.2.0
 django-stubs-ext==4.2.0
@@ -52,6 +54,7 @@ pydyf==0.6.0
 Pygments==2.15.1
 pyphen==0.14.0
 python-dotenv==1.0.0
+python-stdnum==1.18
 pytz==2023.3
 redis==4.3.4
 requests==2.31.0

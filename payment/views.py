@@ -66,8 +66,9 @@ def payment_canceled(request: HttpRequest):
 
 
 def remove_coupon_from_cart_and_session(request: HttpRequest):
-    del request.session['coupon_id']
-    request.session.modified = True
+    if request.session.get('coupon_id'):
+        del request.session['coupon_id']
+        request.session.modified = True
 
     cart = Cart(request)
     cart.coupon_id = None
