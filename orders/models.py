@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.utils.translation import gettext_lazy as _
 
 from decimal import Decimal
 
@@ -9,12 +10,12 @@ from shop.models import Product
 
 
 class Order(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    email = models.EmailField()
-    address = models.CharField(max_length=250)
-    postal_code = models.CharField(max_length=50)
-    city = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=50, verbose_name=_('first name'))
+    last_name = models.CharField(max_length=50, verbose_name=_('last name'))
+    email = models.EmailField(verbose_name=_('email'))
+    address = models.CharField(max_length=250, verbose_name=_('address'))
+    postal_code = models.CharField(max_length=50, verbose_name=_('postal code'))
+    city = models.CharField(max_length=100, verbose_name=_('city'))
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     paid = models.BooleanField(default=False)
